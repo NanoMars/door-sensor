@@ -1,42 +1,32 @@
-#include <Ticker.h>
-
-#ifndef LED_BUILTIN
-#define LED_BUILTIN 13
-#endif
-/*
-Ticker flipper;
-
-
-int count = 0;
-
-void flip() {
-  int state = digitalRead(LED_BUILTIN);  // get the current state of GPIO1 pin
-  digitalWrite(LED_BUILTIN, !state);     // set pin to the opposite state
-
-  ++count;
-  // when the counter reaches a certain value, start blinking like crazy
-  if (count == 20) {
-    flipper.attach(0.1, flip);
-  }
-  // when the counter reaches yet another value, stop blinking
-  else if (count == 120) {
-    flipper.detach();
-  }
-}*/
+const int TRIG_PIN = 16;
+const int ECHO_PIN = 17;
 
 void setup() {
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
-
-  // flip the pin every 0.3s
-  //flipper.attach(0.3, flip);
-  //Serial.begin(115200);
+  Serial.begin(9600);
+  
+  pinMode(TRIG_PIN, OUTPUT);
+  
+  pinMode(ECHO_PIN, INPUT);
 }
 
 void loop() {
+  long duration;
+  float distance;
 
-  digitalWrite (LED_BUILTIN, HIGH);    // turn on the LED
-  delay(500);    // wait for half a second or 500 milliseconds
-  digitalWrite (LED_BUILTIN, LOW);    // turn off the LED
-  delay(500);    // wait for half a second or 500 milliseconds
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  duration = pulseIn(ECHO_PIN, HIGH);
+
+  distance = (duration / 2.0) * 0.0343;
+
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  delay(1000);
 }
