@@ -5,8 +5,6 @@
 #include "time.h"
 #include <ESP_Google_Sheet_Client.h>
 
-// For SD/SD_MMC mounting helper
-#include <GS_SDHelper.h>
 
 #define WIFI_SSID ""
 #define WIFI_PASSWORD ""
@@ -18,7 +16,7 @@
 #define CLIENT_EMAIL ""
 
 // Service Account's private key
-const char PRIVATE_KEY[] PROGMEM = "-----BEGIN PRIVATE KEY-----\\n-----END PRIVATE KEY-----\n";
+const char PRIVATE_KEY[] PROGMEM = "-----BEGIN PRIVATE KEY-----\b\n-----END PRIVATE KEY-----\n";
 
 // The ID of the spreadsheet where you'll publish the data
 const char spreadsheetId[] = "";
@@ -103,8 +101,9 @@ void loop(){
         // Add sample data
         valueRange.add("majorDimension", "COLUMNS");
         valueRange.set("values/[0]/[0]", epochTime);
-        valueRange.set("values/[1]/[0]", 123);
-  
+        valueRange.set("values/[1]/[0]", 25.5);  // Sample temperature
+        valueRange.set("values/[2]/[0]", 60.2);  // Sample humidity
+        valueRange.set("values/[3]/[0]", 1013.1); // Sample pressure
 
         // For Google Sheet API ref doc, go to https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append
         // Append values to the spreadsheet
@@ -119,14 +118,3 @@ void loop(){
         Serial.println();
         Serial.println(ESP.getFreeHeap());
     }
-}
-
-void tokenStatusCallback(TokenInfo info){
-    if (info.status == token_status_error){
-        GSheet.printf("Token info: type = %s, status = %s\n", GSheet.getTokenType(info).c_str(), GSheet.getTokenStatus(info).c_str());
-        GSheet.printf("Token error: %s\n", GSheet.getTokenError(info).c_str());
-    }
-    else{
-        GSheet.printf("Token info: type = %s, status = %s\n", GSheet.getTokenType(info).c_str(), GSheet.getTokenStatus(info).c_str());
-    }
-}
